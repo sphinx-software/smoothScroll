@@ -27,10 +27,10 @@ if (typeof window !== 'object') return;
 if(document.querySelectorAll === void 0 || window.pageYOffset === void 0 || history.pushState === void 0) { return; }
 
 // Get the top position of an element in the document
-var getTop = function(element, start) {
+var getTop = function(element, start, awayTop) {
     // return value of html.getBoundingClientRect().top ... IE : 0, other browsers : -pageYOffset
     if(element.nodeName === 'HTML') return -start
-    return element.getBoundingClientRect().top + start
+    return element.getBoundingClientRect().top + start - awayTop
 }
 // ease in out function thanks to:
 // http://blog.greweb.fr/2012/02/bezier-curve-based-easing-functions-from-concept-to-implementation/
@@ -51,15 +51,16 @@ var position = function(start, end, elapsed, duration) {
 // if the first argument is numeric then scroll to this location
 // if the callback exist, it is called when the scrolling is finished
 // if context is set then scroll that element, else scroll window
-var smoothScroll = function(el, duration, callback, context){
+var smoothScroll = function(el, awayTop, duration, callback, context){
     duration = duration || 500;
     context = context || window;
+    awayTop = awayTop || 0;
     var start = context.scrollTop || window.pageYOffset;
 
     if (typeof el === 'number') {
       var end = parseInt(el);
     } else {
-      var end = getTop(el, start);
+      var end = getTop(el, start, awayTop);
     }
 
     var clock = Date.now();
